@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#080b24" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="Fuel Tap" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="apple-touch-icon" href="icons/icon-192.png" />
+  <title>Fuel Tap</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg:#050716;
+      --bg2:#0b1030;
+      --card:rgba(18,22,57,.86);
+      --card2:rgba(31,35,79,.94);
+      --line:rgba(170,165,255,.20);
+      --text:#f6f3ff;
+      --muted:#b8b5d5;
+      --accent:#bba7ff;
+      --accent2:#8ed8ff;
+      --accentText:#110c2d;
+      --danger:#ff9aae;
+      --shadow:0 14px 40px rgba(0,0,0,.30);
+      --radius:20px;
+    }
+    *{box-sizing:border-box}
+    html{background:var(--bg)}
+    body{
+      margin:0; min-height:100vh; color:var(--text);
+      font-family:ui-rounded,-apple-system,BlinkMacSystemFont,"SF Pro Display","Segoe UI",sans-serif;
+      -webkit-tap-highlight-color:transparent;
+      background:
+        radial-gradient(circle at 14% 10%, rgba(130,96,255,.24), transparent 25%),
+        radial-gradient(circle at 88% 20%, rgba(60,168,255,.18), transparent 26%),
+        radial-gradient(circle at 58% 68%, rgba(151,76,255,.12), transparent 27%),
+        linear-gradient(180deg,#070a21 0%,#090c26 42%,#050716 100%);
+      overflow-x:hidden;
+    }
+    body:before,body:after{
+      content:""; position:fixed; inset:0; pointer-events:none; z-index:-1;
+      background-image:
+        radial-gradient(circle at 8% 14%,rgba(255,255,255,.9) 0 1px,transparent 1.4px),
+        radial-gradient(circle at 24% 31%,rgba(255,255,255,.7) 0 1px,transparent 1.3px),
+        radial-gradient(circle at 41% 9%,rgba(181,221,255,.8) 0 1px,transparent 1.5px),
+        radial-gradient(circle at 63% 22%,rgba(255,255,255,.75) 0 1px,transparent 1.4px),
+        radial-gradient(circle at 79% 8%,rgba(216,198,255,.9) 0 1px,transparent 1.5px),
+        radial-gradient(circle at 92% 38%,rgba(255,255,255,.65) 0 1px,transparent 1.4px),
+        radial-gradient(circle at 16% 67%,rgba(255,255,255,.6) 0 1px,transparent 1.3px),
+        radial-gradient(circle at 73% 81%,rgba(181,221,255,.75) 0 1px,transparent 1.5px),
+        radial-gradient(circle at 36% 91%,rgba(255,255,255,.75) 0 1px,transparent 1.4px);
+      background-size:260px 260px;
+      opacity:.62;
+    }
+    body:after{background-size:410px 410px; transform:translate(35px,70px); opacity:.35}
+    main{width:min(100%,760px);margin:0 auto;padding:calc(env(safe-area-inset-top) + 18px) 14px calc(env(safe-area-inset-bottom) + 36px)}
+    header{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;margin:4px 4px 14px}
+    h1{margin:0;font-size:31px;letter-spacing:-.9px;text-shadow:0 0 24px rgba(187,167,255,.2)}
+    .sub{color:var(--muted);font-size:13px;margin-top:4px}
+    .pill{font-size:12px;color:#d9d4ff;border:1px solid var(--line);background:rgba(20,24,58,.78);border-radius:999px;padding:7px 10px;white-space:nowrap;backdrop-filter:blur(12px)}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);backdrop-filter:blur(15px)}
+    .date-mode{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px;margin-bottom:12px;align-items:center}
+    .date-wrap label{display:block;color:var(--muted);font-size:11px;margin:0 0 5px 2px;text-transform:uppercase;letter-spacing:.08em}
+    input[type="date"],input[type="text"],select{width:100%;min-height:48px;border:1px solid var(--line);border-radius:13px;background:var(--card2);color:var(--text);padding:10px 12px;font-size:16px;outline:none}
+    select{appearance:none;background-image:linear-gradient(45deg,transparent 50%,#cfc6ff 50%),linear-gradient(135deg,#cfc6ff 50%,transparent 50%);background-position:calc(100% - 18px) 20px,calc(100% - 13px) 20px;background-size:5px 5px,5px 5px;background-repeat:no-repeat;padding-right:32px}
+    .switch-wrap{display:flex;align-items:center;gap:8px;white-space:nowrap;padding-top:15px}
+    .switch-label{font-size:12px;color:var(--muted);text-align:right}
+    .switch{position:relative;display:inline-block;width:55px;height:32px;flex:0 0 auto}.switch input{display:none}
+    .slider{position:absolute;inset:0;background:#35375c;border-radius:999px;border:1px solid #555784;transition:.18s ease}
+    .slider:before{content:"";position:absolute;width:24px;height:24px;left:3px;top:3px;background:white;border-radius:50%;transition:.18s ease;box-shadow:0 2px 8px rgba(0,0,0,.25)}
+    .switch input:checked + .slider{background:linear-gradient(90deg,var(--accent),var(--accent2));border-color:transparent}.switch input:checked + .slider:before{transform:translateX(23px)}
+    .workout-note{display:none;margin-top:10px}.workout-note.visible{display:block}
+    .picker-card{padding:14px;margin-bottom:12px}
+    .section-title{font-size:16px;font-weight:850;margin-bottom:4px}.section-sub{font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.4}
+    .pickers{display:grid;grid-template-columns:1fr 1fr;gap:9px}.picker.full{grid-column:1/-1}.picker-label{display:block;font-size:11px;color:#cbc6e8;margin:0 0 5px 2px;font-weight:750}
+    .picker select{font-size:14px;min-height:50px}
+    .totals-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;margin-bottom:12px}
+    .total-card{background:rgba(18,22,57,.82);border:1px solid var(--line);border-radius:16px;padding:12px;backdrop-filter:blur(12px)}
+    .total-name{color:var(--muted);font-size:11px}.total-value{font-weight:900;font-size:22px;margin-top:2px;letter-spacing:-.4px}.total-workout{color:#9cddff;font-size:10px;margin-top:3px;min-height:13px}
+    .manual{padding:14px;margin-bottom:12px}.nutrient{border-top:1px solid var(--line);padding:13px 0 2px}.nutrient:first-of-type{border-top:0;padding-top:2px}.nutrient-head{display:flex;justify-content:space-between;gap:10px;align-items:baseline;margin-bottom:9px}.nutrient-name{font-size:15px;font-weight:800}.nutrient-current{color:var(--muted);font-size:12px}.button-grid{display:grid;gap:7px}.add-btn{min-height:48px;border-radius:12px;color:var(--text);background:var(--card2);border:1px solid rgba(185,180,255,.15);font-weight:850;font-size:15px}.add-btn:active{transform:scale(.97);background:#353a82}.add-btn .unit{font-size:10px;font-weight:650;color:var(--muted);margin-left:1px}
+    button{appearance:none;font:inherit;cursor:pointer;touch-action:manipulation}.actions{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:12px}.primary,.secondary,.danger{min-height:50px;border-radius:14px;padding:10px 12px;font-weight:850}.primary{border:0;background:linear-gradient(90deg,var(--accent),var(--accent2));color:var(--accentText)}.secondary{background:var(--card2);color:var(--text);border:1px solid var(--line)}.danger{background:rgba(92,25,50,.17);color:var(--danger);border:1px solid rgba(255,115,155,.28);grid-column:1/-1}
+    details{margin-top:12px}.details-card{padding:0 14px 13px}.details-card summary{cursor:pointer;padding:14px 0;font-weight:800;color:#ddd8ff}.tiny{color:var(--muted);font-size:11px;text-align:center;margin:12px 8px 0;line-height:1.45}
+    .toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom) + 14px);background:#f3f0ff;color:#15112f;border-radius:999px;padding:10px 14px;font-size:13px;font-weight:850;opacity:0;pointer-events:none;transition:.2s ease;z-index:20;max-width:90%;text-align:center}.toast.show{opacity:1}
+    @media(min-width:620px){.totals-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.pickers{grid-template-columns:repeat(3,1fr)}.picker.full{grid-column:auto}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div><h1>Fuel Tap ✦</h1><div class="sub">Daily nutrition, without the food diary.</div></div>
+    <div class="pill" id="actionCount">0 adds</div>
+  </header>
+
+  <section class="card date-mode">
+    <div class="date-wrap">
+      <label for="logDate">Log date</label>
+      <input id="logDate" type="date" />
+    </div>
+    <div class="switch-wrap">
+      <div class="switch-label"><strong style="color:#e7e3ff">Workout</strong><br>nutrition</div>
+      <label class="switch" aria-label="Workout nutrition mode"><input id="workoutToggle" type="checkbox"><span class="slider"></span></label>
+    </div>
+    <div id="workoutNote" class="workout-note" style="grid-column:1/-1"><input id="workoutLabel" type="text" maxlength="50" placeholder="Optional workout label (e.g., Long bike)"></div>
+  </section>
+
+  <section class="card picker-card">
+    <div class="section-title">Add a food</div>
+    <div class="section-sub">Choose a serving and it instantly adds the nutrition to the selected date. The food name itself is not saved.</div>
+    <div class="pickers" id="pickers"></div>
+  </section>
+
+  <section class="totals-grid" id="totalsGrid"></section>
+
+  <details class="card details-card">
+    <summary>Quick-add macros manually</summary>
+    <div id="manualSections" class="manual" style="padding:0"></div>
+  </details>
+
+  <section class="actions">
+    <button class="secondary" id="undoBtn">Undo last add</button>
+    <button class="primary" id="exportBtn">Export date CSV</button>
+    <button class="secondary" id="exportAllBtn">Export all dates</button>
+    <button class="secondary" id="copyBtn">Copy totals</button>
+    <button class="danger" id="clearBtn">Delete selected date</button>
+  </section>
+  <div class="tiny">Research export = one row per date. Food names and meal labels are intentionally excluded. Values from the food library are estimates and can be updated as your usual foods change.</div>
+</main>
+<div class="toast" id="toast">Added</div>
+<script src="food-library.js"></script>
+<script>
+(() => {
+  const STORAGE_KEY='fuelTapDailyEvents_v3';
+  const SETTINGS_KEY='fuelTapSettings_v3';
+  const metrics=[
+    {key:'energy_kcal',name:'Calories',unit:'kcal',buttons:[10,25,50,100,250]},
+    {key:'protein_g',name:'Protein',unit:'g',buttons:[1,5,10,20]},
+    {key:'carbs_g',name:'Carbs',unit:'g',buttons:[5,10,20,50]},
+    {key:'fat_g',name:'Fat',unit:'g',buttons:[1,5,10]},
+    {key:'sodium_mg',name:'Sodium',unit:'mg',buttons:[50,100,250,500]},
+    {key:'caffeine_mg',name:'Caffeine',unit:'mg',buttons:[25,50,100,200]},
+    {key:'water_oz',name:'Water',unit:'oz',buttons:[4,8,12,24]}
+  ];
+  const pickerDefs=[['breakfast','Breakfast'],['lunch','Lunch'],['dinner','Dinner'],['snacks','Snacks'],['drinks','Drinks']];
+  const $=id=>document.getElementById(id);
+  const els={logDate:$('logDate'),workoutToggle:$('workoutToggle'),workoutNote:$('workoutNote'),workoutLabel:$('workoutLabel'),pickers:$('pickers'),totalsGrid:$('totalsGrid'),manualSections:$('manualSections'),actionCount:$('actionCount'),toast:$('toast'),undoBtn:$('undoBtn'),exportBtn:$('exportBtn'),exportAllBtn:$('exportAllBtn'),copyBtn:$('copyBtn'),clearBtn:$('clearBtn')};
+  let events=load(STORAGE_KEY,[]), settings=load(SETTINGS_KEY,{workout:false,workoutLabel:''}),toastTimer;
+  function load(k,f){try{return JSON.parse(localStorage.getItem(k))??f}catch{return f}}
+  function save(){localStorage.setItem(STORAGE_KEY,JSON.stringify(events))}
+  function saveSettings(){settings={workout:els.workoutToggle.checked,workoutLabel:els.workoutLabel.value.trim()};localStorage.setItem(SETTINGS_KEY,JSON.stringify(settings))}
+  function today(){const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`}
+  function uuid(){return crypto.randomUUID?crypto.randomUUID():`${Date.now()}-${Math.random().toString(16).slice(2)}`}
+  function selectedDate(){return els.logDate.value||today()}
+  function blank(){return Object.fromEntries(metrics.map(m=>[m.key,0]))}
+  function addBundle(bundle,labelForToast){
+    const delta=blank();
+    delta.energy_kcal=Number(bundle.kcal??bundle.energy_kcal??0);
+    delta.protein_g=Number(bundle.protein??bundle.protein_g??0);
+    delta.carbs_g=Number(bundle.carbs??bundle.carbs_g??0);
+    delta.fat_g=Number(bundle.fat??bundle.fat_g??0);
+    delta.sodium_mg=Number(bundle.sodium??bundle.sodium_mg??0);
+    delta.caffeine_mg=Number(bundle.caffeine??bundle.caffeine_mg??0);
+    delta.water_oz=Number(bundle.water??bundle.water_oz??0);
+    events.push({id:uuid(),ts:new Date().toISOString(),date:selectedDate(),context:els.workoutToggle.checked?'workout':'daily',workout_label:els.workoutToggle.checked?els.workoutLabel.value.trim():'',delta});
+    save();render();showToast(`Added ${labelForToast}`);
+  }
+  function addMetric(key,amount){const b={};b[key]=amount;addBundle(b,`+${amount} ${metrics.find(m=>m.key===key).unit}`)}
+  function totals(list){const t=blank();list.forEach(e=>metrics.forEach(m=>t[m.key]+=Number(e.delta?.[m.key]||0)));return t}
+  function eventsForDate(date){return events.filter(e=>e.date===date)}
+  function format(x){const n=Number(x)||0;return Number.isInteger(n)?String(n):n.toFixed(1)}
+  function renderPickers(){
+    els.pickers.innerHTML=pickerDefs.map(([key,name])=>{
+      const options=(window.FUEL_TAP_FOODS?.[key]||[]).map((f,i)=>`<option value="${i}">${escapeHtml(f.label)}</option>`).join('');
+      return `<div class="picker ${key==='drinks'?'full':''}"><label class="picker-label">${name}</label><select data-food-group="${key}"><option value="">Tap to add…</option>${options}</select></div>`;
+    }).join('');
+    document.querySelectorAll('select[data-food-group]').forEach(sel=>sel.addEventListener('change',()=>{if(sel.value==='')return;const group=sel.dataset.foodGroup;const item=window.FUEL_TAP_FOODS[group][Number(sel.value)];addBundle(item,item.label);sel.value='';}));
+  }
+  function render(){
+    const d=selectedDate(),list=eventsForDate(d),all=totals(list),wo=totals(list.filter(e=>e.context==='workout'));
+    els.actionCount.textContent=`${list.length} ${list.length===1?'add':'adds'}`;
+    els.totalsGrid.innerHTML=metrics.map(m=>`<div class="total-card"><div class="total-name">${m.name}</div><div class="total-value">${format(all[m.key])}<span style="font-size:11px;color:var(--muted);font-weight:700"> ${m.unit}</span></div><div class="total-workout">${wo[m.key]?`Workout ${format(wo[m.key])} ${m.unit}`:'&nbsp;'}</div></div>`).join('');
+    els.manualSections.innerHTML=metrics.map(m=>`<div class="nutrient"><div class="nutrient-head"><div class="nutrient-name">Add ${m.name.toLowerCase()}</div><div class="nutrient-current">${format(all[m.key])} ${m.unit}</div></div><div class="button-grid" style="grid-template-columns:repeat(${m.buttons.length},minmax(0,1fr))">${m.buttons.map(v=>`<button class="add-btn" data-key="${m.key}" data-amount="${v}">+${v}<span class="unit">${m.unit}</span></button>`).join('')}</div></div>`).join('');
+    document.querySelectorAll('.add-btn').forEach(b=>b.addEventListener('click',()=>addMetric(b.dataset.key,Number(b.dataset.amount))));
+    els.workoutNote.classList.toggle('visible',els.workoutToggle.checked);
+  }
+  function rowForDate(date){
+    const list=eventsForDate(date),all=totals(list),wo=totals(list.filter(e=>e.context==='workout'));
+    const labels=[...new Set(list.filter(e=>e.context==='workout'&&e.workout_label).map(e=>e.workout_label))].join(' | ');
+    return {local_date:date,energy_kcal:all.energy_kcal,protein_g:all.protein_g,carbs_g:all.carbs_g,fat_g:all.fat_g,sodium_mg:all.sodium_mg,caffeine_mg:all.caffeine_mg,water_oz:all.water_oz,water_ml:Math.round(all.water_oz*29.5735),workout_energy_kcal:wo.energy_kcal,workout_protein_g:wo.protein_g,workout_carbs_g:wo.carbs_g,workout_fat_g:wo.fat_g,workout_sodium_mg:wo.sodium_mg,workout_caffeine_mg:wo.caffeine_mg,workout_water_oz:wo.water_oz,workout_water_ml:Math.round(wo.water_oz*29.5735),workout_labels:labels,logging_actions:list.length};
+  }
+  const headers=['local_date','energy_kcal','protein_g','carbs_g','fat_g','sodium_mg','caffeine_mg','water_oz','water_ml','workout_energy_kcal','workout_protein_g','workout_carbs_g','workout_fat_g','workout_sodium_mg','workout_caffeine_mg','workout_water_oz','workout_water_ml','workout_labels','logging_actions'];
+  function csvEscape(v){const s=String(v??'');return /[",\n\r]/.test(s)?`"${s.replace(/"/g,'""')}"`:s}
+  function downloadRows(rows,filename){if(!rows.length){showToast('No data to export');return}const csv=[headers,...rows.map(r=>headers.map(h=>r[h]??''))].map(row=>row.map(csvEscape).join(',')).join('\r\n');const blob=new Blob([csv],{type:'text/csv;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=filename;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);showToast('CSV exported')}
+  function showToast(msg){clearTimeout(toastTimer);els.toast.textContent=msg;els.toast.classList.add('show');toastTimer=setTimeout(()=>els.toast.classList.remove('show'),1300)}
+  function escapeHtml(v=''){return String(v).replace(/[&<>'"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',"'":'&#39;','"':'&quot;'}[c]))}
+  els.logDate.value=today();els.workoutToggle.checked=Boolean(settings.workout);els.workoutLabel.value=settings.workoutLabel||'';
+  els.logDate.addEventListener('change',render);els.workoutToggle.addEventListener('change',()=>{saveSettings();render()});els.workoutLabel.addEventListener('input',saveSettings);
+  els.undoBtn.addEventListener('click',()=>{const d=selectedDate();for(let i=events.length-1;i>=0;i--){if(events[i].date===d){events.splice(i,1);save();render();showToast('Last add removed');return}}showToast('Nothing to undo')});
+  els.exportBtn.addEventListener('click',()=>{const d=selectedDate();if(!eventsForDate(d).length){showToast('No data for this date');return}downloadRows([rowForDate(d)],`fuel-tap_${d}.csv`)});
+  els.exportAllBtn.addEventListener('click',()=>{const dates=[...new Set(events.map(e=>e.date))].sort();downloadRows(dates.map(rowForDate),`fuel-tap_all_${today()}.csv`)});
+  els.copyBtn.addEventListener('click',async()=>{const r=rowForDate(selectedDate());const text=`Nutrition ${r.local_date}: ${format(r.energy_kcal)} kcal | Protein ${format(r.protein_g)} g | Carbs ${format(r.carbs_g)} g | Fat ${format(r.fat_g)} g | Sodium ${format(r.sodium_mg)} mg | Caffeine ${format(r.caffeine_mg)} mg | Water ${format(r.water_oz)} oz`;try{await navigator.clipboard.writeText(text);showToast('Totals copied')}catch{showToast('Copy unavailable')}});
+  els.clearBtn.addEventListener('click',()=>{const d=selectedDate(),n=eventsForDate(d).length;if(!n){showToast('Nothing to delete');return}if(confirm(`Delete all nutrition data for ${d}?`)){events=events.filter(e=>e.date!==d);save();render();showToast('Date deleted')}});
+  renderPickers();render();
+  if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./service-worker.js').catch(()=>{}));
+})();
+</script>
+</body>
+</html>
