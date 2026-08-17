@@ -143,7 +143,7 @@
     {key:'caffeine_mg',name:'Caffeine',unit:'mg',buttons:[25,50,100,200]},
     {key:'water_oz',name:'Water',unit:'oz',buttons:[4,8,12,24]}
   ];
-  const pickerDefs=[['breakfast','Breakfast'],['lunch','Lunch'],['dinner','Dinner'],['snacks','Snacks'],['drinks','Drinks']];
+  const pickerDefs=[['breakfast','Breakfast'],['dinner','Dinner'],['snacks','Snacks'],['drinks','Drinks']];
   const $=id=>document.getElementById(id);
   const els={logDate:$('logDate'),workoutToggle:$('workoutToggle'),workoutNote:$('workoutNote'),workoutLabel:$('workoutLabel'),pickers:$('pickers'),totalsGrid:$('totalsGrid'),manualSections:$('manualSections'),actionCount:$('actionCount'),toast:$('toast'),undoBtn:$('undoBtn'),exportBtn:$('exportBtn'),exportAllBtn:$('exportAllBtn'),copyBtn:$('copyBtn'),clearBtn:$('clearBtn')};
   let events=load(STORAGE_KEY,[]), settings=load(SETTINGS_KEY,{workout:false,workoutLabel:''}),toastTimer;
